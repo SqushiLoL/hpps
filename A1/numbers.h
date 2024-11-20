@@ -49,10 +49,49 @@ unsigned int bits8_to_int(struct bits8 x) {
 }
 
 void bits8_print(struct bits8 v) {
-  printf("%d%d%d%d%d%d%d%d", v.b7, v.b6, v.b5, v.b4, v.b3, v.b2, v.b1, v.b0);
+  printf("%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d", v.b7, v.b6, v.b5, v.b4, v.b3, v.b2,
+         v.b1, v.b0);
 }
 
-struct bits8 bits8_add(struct bits8 x, struct bits8 y) {}
+struct bits8 bits8_add(struct bits8 x, struct bits8 y) {
+  // store result
+  struct bits8 result;
 
-struct bits8 bits8_negate(struct bits8 x);
+  // initizalize carry
+  struct bit carry = bit_from_int(0);
+
+  result.b0 = bit_xor(bit_xor(x.b0, y.b0), carry);
+  carry     = bit_or(bit_and(x.b0, y.b0), bit_and(carry, bit_xor(x.b0, y.b0)));
+  result.b1 = bit_xor(bit_xor(x.b1, y.b1), carry);
+  carry     = bit_or(bit_and(x.b1, y.b1), bit_and(carry, bit_xor(x.b1, y.b1)));
+  result.b2 = bit_xor(bit_xor(x.b2, y.b2), carry);
+  carry     = bit_or(bit_and(x.b2, y.b2), bit_and(carry, bit_xor(x.b2, y.b2)));
+  result.b3 = bit_xor(bit_xor(x.b3, y.b3), carry);
+  carry     = bit_or(bit_and(x.b3, y.b3), bit_and(carry, bit_xor(x.b3, y.b3)));
+  result.b4 = bit_xor(bit_xor(x.b4, y.b4), carry);
+  carry     = bit_or(bit_and(x.b4, y.b4), bit_and(carry, bit_xor(x.b4, y.b4)));
+  result.b5 = bit_xor(bit_xor(x.b5, y.b5), carry);
+  carry     = bit_or(bit_and(x.b5, y.b5), bit_and(carry, bit_xor(x.b5, y.b5)));
+  result.b6 = bit_xor(bit_xor(x.b6, y.b6), carry);
+  carry     = bit_or(bit_and(x.b6, y.b6), bit_and(carry, bit_xor(x.b6, y.b6)));
+  result.b7 = bit_xor(bit_xor(x.b7, y.b7), carry);
+  carry     = bit_or(bit_and(x.b7, y.b7), bit_and(carry, bit_xor(x.b7, y.b7)));
+
+  // return x and y sum
+  return result;
+}
+
+struct bits8 bits8_negate(struct bits8 x) {
+  struct bits8 result;
+  result.b0 = bit_not(x.b0);
+  result.b1 = bit_not(x.b1);
+  result.b2 = bit_not(x.b2);
+  result.b3 = bit_not(x.b3);
+  result.b4 = bit_not(x.b4);
+  result.b5 = bit_not(x.b5);
+  result.b6 = bit_not(x.b6);
+  result.b7 = bit_not(x.b7);
+  return bits8_add(result, bits8_from_int(1));
+}
+
 struct bits8 bits8_mul(struct bits8 x, struct bits8 y);
