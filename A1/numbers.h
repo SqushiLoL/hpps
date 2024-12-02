@@ -1,5 +1,7 @@
 #include "bits.h"
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 struct bits8 {
   struct bit b0; // Least significant bit
@@ -37,20 +39,21 @@ struct bits8 bits8_from_int(unsigned int x) {
 
 unsigned int bits8_to_int(struct bits8 x) {
   unsigned int result = 0;
-  result              = set_bit(result, 0) * bit_to_int(x.b0);
-  result              = set_bit(result, 1) * bit_to_int(x.b1);
-  result              = set_bit(result, 2) * bit_to_int(x.b2);
-  result              = set_bit(result, 3) * bit_to_int(x.b3);
-  result              = set_bit(result, 4) * bit_to_int(x.b4);
-  result              = set_bit(result, 5) * bit_to_int(x.b5);
-  result              = set_bit(result, 6) * bit_to_int(x.b6);
-  result              = set_bit(result, 7) * bit_to_int(x.b7);
+  result |= bit_to_int(x.b0) << 0;
+  result |= bit_to_int(x.b1) << 1;
+  result |= bit_to_int(x.b2) << 2;
+  result |= bit_to_int(x.b3) << 3;
+  result |= bit_to_int(x.b4) << 4;
+  result |= bit_to_int(x.b5) << 5;
+  result |= bit_to_int(x.b6) << 6;
+  result |= bit_to_int(x.b7) << 7;
   return result;
 }
 
 void bits8_print(struct bits8 v) {
-  printf("%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d", v.b7, v.b6, v.b5, v.b4, v.b3, v.b2,
-         v.b1, v.b0);
+  printf("%d%d%d%d%d%d%d%d\n", bit_to_int(v.b0), bit_to_int(v.b1),
+         bit_to_int(v.b2), bit_to_int(v.b3), bit_to_int(v.b4), bit_to_int(v.b5),
+         bit_to_int(v.b6), bit_to_int(v.b7));
 }
 
 struct bits8 bits8_add(struct bits8 x, struct bits8 y) {
@@ -94,4 +97,13 @@ struct bits8 bits8_negate(struct bits8 x) {
   return bits8_add(result, bits8_from_int(1));
 }
 
-struct bits8 bits8_mul(struct bits8 x, struct bits8 y);
+struct bits8 bits8_mul(struct bits8 x, struct bits8 y) {
+  struct bits8 result = bits8_from_int(0);
+  for (int i = 0; i < 8; i++) {
+    if (get_bit(bits8_to_int(y), i) == 1) {
+      result = bits8_add(result, x);
+    }
+    x = bits8_add(x, x);
+  }
+  return result;
+}

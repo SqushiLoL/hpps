@@ -1,4 +1,5 @@
 #include "numbers.h"
+#include <assert.h>
 #include <stdlib.h>
 
 int main() {
@@ -29,4 +30,19 @@ int main() {
   // edge cases
   bits8_print(bits8_from_int(255));
   bits8_print(bits8_from_int(0));
+
+  // Conversion tests
+  assert(bits8_to_int(bits8_from_int(0)) == 0);
+  assert(bits8_to_int(bits8_from_int(255)) == 255);
+
+  // Addition tests
+  assert(bits8_to_int(bits8_add(bits8_from_int(5), bits8_from_int(10))) == 15);
+  assert(bits8_to_int(bits8_add(bits8_from_int(255), bits8_from_int(1))) == 0);
+
+  // Negation tests
+  assert(bits8_to_int(bits8_negate(bits8_from_int(1))) == 255);
+  assert(bits8_to_int(bits8_negate(bits8_from_int(0))) == 0);
+
+  // Multiplication tests
+  assert(bits8_to_int(bits8_mul(bits8_from_int(3), bits8_from_int(7))) == 21);
 }
